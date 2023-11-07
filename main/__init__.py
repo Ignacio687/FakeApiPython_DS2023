@@ -9,7 +9,7 @@ app = FastAPI()
 router = APIRouter()
 
 # Configura la base de datos SQLite
-DATABASE_URL = "sqlite:///./fakeApi.db"
+DATABASE_URL = "sqlite:///fakeApi.db"
 engine = create_engine(DATABASE_URL)
 
 # Crea una sesión SQLAlchemy
@@ -18,5 +18,3 @@ db = SessionLocal()
 
 # Define una tabla de ejemplo usando SQLAlchemy
 Base = declarative_base()
-
-Base.metadata.create_all(bind=engine)
