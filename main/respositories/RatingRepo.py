@@ -1,4 +1,4 @@
-from . import BaseRepo
+from ..entities import Rating
 
-class RatingRepo(BaseRepo):
+class RatingRepo(Rating):
     pass

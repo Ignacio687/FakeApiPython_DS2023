@@ -1,12 +1,12 @@
-from main import Base
-from sqlalchemy import Column, Integer, ForeignKey
+from main.entities import BaseTable
+from sqlalchemy import Column, Integer, ForeignKey, String
 from sqlalchemy.orm import relationship, DeclarativeBase
 
-class Rating(Base):
+class Rating(BaseTable):
     __tablename__ = "rating"
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+
+    name = Column(String, nullable=False)
     rate = Column(Integer, nullable=False)
-    count = Column(Integer)
 
     producto_id = Column(Integer, ForeignKey("producto.id"))
     producto = relationship("Producto", back_populates="rating")

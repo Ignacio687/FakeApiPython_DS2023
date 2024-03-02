@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from main.services import BaseServiceImpl, ProductServiceImpl
 from main.controllers import BaseController
 import json
+from fastapi import Response
 
 service = ProductServiceImpl()
 class RatingModel(BaseModel):
@@ -22,9 +23,14 @@ class BaseControllerImplement(BaseController):
     @router.get("")
     def getAll():
         try:
-            return json.dumps([object.to_dict() for object in service.findAll()])
+            headers = {
+                "Content-Type": "application/json"
+            }
+            json_data = json.dumps([object.to_dict() for object in service.findAll()])
+            return Response(json_data, status_code=200, headers=headers)
         except Exception as e:
-            return {"error" : "Error. Por favor intente mas tarde."+ str(e.args)}
+            json_data = json.dumps({"error" : "Error. Por favor intente mas tarde."+ str(e.args)})
+            return Response(json_data, status_code=500, headers=headers)
     
     @router.get("/{id}")
     def getOne(id: int):
@@ -36,7 +42,12 @@ class BaseControllerImplement(BaseController):
     @router.post("")
     def post(data: ProductModel):
         try:
-            return json.dumps(service.save(data))
+            headers = {
+                    "Content-Type": "application/json"
+                }
+            json_data = service.save(data)
+            #json_data = json.dumps(rrt)
+            return Response(json_data, status_code=201, headers=headers)
         except Exception as e:
             print(e.args)
             return {"error" : "Error. Por favor intente mas tarde."}

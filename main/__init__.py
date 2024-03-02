@@ -18,3 +18,6 @@ db = SessionLocal()
 
 # Define una tabla de ejemplo usando SQLAlchemy
 Base = declarative_base()
+
+from main.main import controller
+Base.metadata.create_all(bind=engine)

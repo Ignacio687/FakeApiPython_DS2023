@@ -1,6 +1,7 @@
-from . import BaseRepo, db
+from . import db
+from ..entities import Producto
 
-class ProductRepo(BaseRepo):
+class ProductRepo(Producto):
     
     def buscarPorPrecioMayorA(self, producto, precio_minimo: int):
         """ Buscar y filtrar por el campo price en la base de datos, buscando los productos cuyo precio sea mayor a 1000. """
