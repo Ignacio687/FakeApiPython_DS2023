@@ -8,4 +8,4 @@ WORKDIR /FakeApiPython_DS2023
 RUN pip install -r requirements.txt
 COPY run.py /run.py
 
-ENTRYPOINT ["/run.py"]
+ENTRYPOINT ["python3 run.py"]
