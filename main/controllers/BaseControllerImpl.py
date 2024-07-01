@@ -7,8 +7,8 @@ from fastapi import Response
 
 service = ProductServiceImpl()
 class RatingModel(BaseModel):
+    name: str
     rate: int
-    count: int
 
 class ProductModel(BaseModel):
     title: str
@@ -16,6 +16,7 @@ class ProductModel(BaseModel):
     description: str
     category: str
     image: str
+    count: int
     rating: RatingModel
 
 class BaseControllerImplement(BaseController):
