@@ -6,6 +6,5 @@ RUN git clone https://github.com/Ignacio687/FakeApiPython_DS2023.git
 
 WORKDIR /FakeApiPython_DS2023
 RUN pip install -r requirements.txt
-COPY run.py /run.py
 
 ENTRYPOINT ["python3 run.py"]
