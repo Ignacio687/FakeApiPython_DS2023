@@ -23,5 +23,8 @@ class Producto(BaseTable):
             "category": self.category,
             "image": self.image,
             "count": self.count,
-            "rating": [{rating.name: rating.rate} for rating in self.rating]
+            "rating": [{
+                "name": rating.name,
+                "rate": rating.rate
+            } for rating in self.rating]
         }

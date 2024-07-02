@@ -1,33 +1,20 @@
 from main import router, app
-from pydantic import BaseModel
 from main.services import BaseServiceImpl, ProductServiceImpl
 from main.controllers import BaseController
 import json
 from fastapi import Response
+from main.customExceptions import ObjectNotFoundException
+from abc import ABCMeta, abstractmethod
 
 service = ProductServiceImpl()
-class RatingModel(BaseModel):
-    name: str
-    rate: int
+headers = {"Content-Type": "application/json"}
 
-class ProductModel(BaseModel):
-    title: str
-    price: int
-    description: str
-    category: str
-    image: str
-    count: int
-    rating: RatingModel
-
-class BaseControllerImplement(BaseController):
-
+class BaseControllerImplement(BaseController, metaclass=ABCMeta):
+    
     @router.get("")
     def getAll():
         try:
-            headers = {
-                "Content-Type": "application/json"
-            }
-            json_data = json.dumps([object.to_dict() for object in service.findAll()])
+            json_data = service.findAll()
             return Response(json_data, status_code=200, headers=headers)
         except Exception as e:
             json_data = json.dumps({"error" : "Error. Por favor intente mas tarde."+ str(e.args)})
@@ -36,33 +23,31 @@ class BaseControllerImplement(BaseController):
     @router.get("/{id}")
     def getOne(id: int):
         try:
-            return service.findById(id)
+            json_data = service.findById(id)
+            return Response(json_data, status_code=200, headers=headers)
+        except ObjectNotFoundException as e:
+            json_data = json.dumps({"error" :str(e.args[0])})
+            return Response(json_data, status_code=404, headers=headers)
         except Exception as e:
-            return {"error" : "Error. Por favor intente mas tarde."}
+            json_data = json.dumps({"error" : "Error. Por favor intente mas tarde."+ str(e.args)})
+            return Response(json_data, status_code=500, headers=headers)
         
-    @router.post("")
-    def post(data: ProductModel):
-        try:
-            headers = {
-                    "Content-Type": "application/json"
-                }
-            json_data = service.save(data)
-            #json_data = json.dumps(rrt)
-            return Response(json_data, status_code=201, headers=headers)
-        except Exception as e:
-            print(e.args)
-            return {"error" : "Error. Por favor intente mas tarde."}
+    @abstractmethod
+    def post(self, object):
+        pass
 
-    @router.put("/{id}", response_model=BaseModel)
-    def put(base: BaseModel, id: int):
-        try:
-            return service.update(base, id)
-        except Exception as e:
-            return {"error" : "Error. Por favor intente mas tarde."}
+    @abstractmethod
+    def put(self, object, id):
+        pass
 
     @router.delete("/{id}")
     def delete(id: int):
         try:
-            return service.delete(id)
+            service.delete(id)
+            return Response(None, status_code=204)
+        except ObjectNotFoundException as e:
+            json_data = json.dumps({"error" :str(e.args[0])})
+            return Response(json_data, status_code=404, headers=headers)
         except Exception as e:
-            return {"error" : "Error. Por favor intente mas tarde."}
+            json_data = json.dumps({"error" : "Error. Por favor intente mas tarde."+ str(e.args)})
+            return Response(json_data, status_code=500, headers=headers)
